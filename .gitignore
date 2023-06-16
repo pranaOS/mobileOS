@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+
+# ide cache
+.vscode/
+.idea/
+
+# system cache
+.DS_Store
