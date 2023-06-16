@@ -19,11 +19,14 @@
 namespace Utils::temperature {
 
     /**
-     * @brief Symbols
+     * @brief Symbols, Degree, DegreeSymbol
      * 
      */
-    inline constexpr auto celsiusSymbol = "C";
-    inline constexpr auto fahrenheitSymbol = "F";
+    inline constexpr auto celsiusSymbol          = "C";
+    inline constexpr auto fahrenheitSymbol       = "F";
+    inline constexpr auto degree                 = "\u00B0";
+    inline constexpr auto celsiusDegreeSymbol    = "\u00B0C";
+    inline constexpr auto fahrenheitDegreeSymbol = "\u00B0F";
 
     /**
      * @brief Temperature
@@ -35,6 +38,7 @@ namespace Utils::temperature {
             Celsius,
             Fahrenheit
         };
+
         Unit unit;
         Value value;
     };
@@ -65,7 +69,13 @@ namespace Utils::temperature {
      * @param str 
      * @return std::optional<Temperature::Unit> 
      */
-    inline std::optional<Temperature::Unit> strToUnit(std::string_view str) {   
+    inline std::optional<Temperature::Unit> strToUnit(std::string_view str) {
+        if ((str == celsiusDegreeSymbol) || (str == celsiusSymbol)) {
+            return Temperature::Unit::Celsius;
+        }
+        else if ((str == fahrenheitDegreeSymbol) || (str == fahrenheitSymbol)) {
+            return Temperature::Unit::Fahrenheit;
+        }
         return {};
     }
 
@@ -79,5 +89,18 @@ namespace Utils::temperature {
     inline std::string tempToStrFloat(Temperature temperature, const int precision = 1) {
         std::ostringstream stream;
         stream << std::fixed << std::setprecision(precision);
+        stream << temperature.value << degree << utils::temperature::unitToStr(temperature.unit);
+        return stream.str();
     }
-}
+
+    /**
+     * @brief tempToStrDec
+     * 
+     * @param temperature 
+     * @return std::string 
+     */
+    inline std::string tempToStrDec(Temperature temperature) {
+        return std::to_string(static_cast<std::int32_t>(temperature.value)) + degree +
+               utils::temperature::unitToStr(temperature.unit);
+    }
+} 
